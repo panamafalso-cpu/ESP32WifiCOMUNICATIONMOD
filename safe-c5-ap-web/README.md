@@ -28,3 +28,5 @@ SSID: `C5-WiFi6-Lab`
 Password: `c5labwifi6`
 
 Change the development password before using this AP outside a controlled test environment.
+
+The CI workflow is named `Standalone ESP32-C5 Wi-Fi 6 AP`; check the Actions tab on this branch for the result.
