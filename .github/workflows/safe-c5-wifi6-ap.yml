@@ -1,0 +1,46 @@
+name: Standalone ESP32-C5 Wi-Fi 6 AP
+
+on:
+  push:
+    branches:
+      - safe-c5-wifi6-ap-web
+    paths:
+      - "safe-c5-ap-web/**"
+      - ".github/workflows/safe-c5-wifi6-ap.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: espressif/idf:v5.5.2
+    defaults:
+      run:
+        working-directory: safe-c5-ap-web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure ESP32-C5 target
+        run: idf.py set-target esp32c5
+
+      - name: Build firmware
+        run: idf.py build
+
+      - name: Merge flash image
+        run: idf.py merge-bin -o build/firmware-merged.bin
+
+      - name: Upload firmware and build metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: safe-c5-wifi6-ap-web
+          path: |
+            safe-c5-ap-web/build/firmware-merged.bin
+            safe-c5-ap-web/build/*.bin
+            safe-c5-ap-web/build/flasher_args.json
+            safe-c5-ap-web/build/project_description.json
+          if-no-files-found: error
+          retention-days: 14
